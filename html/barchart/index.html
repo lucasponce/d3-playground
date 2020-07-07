@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Barchart from https://observablehq.com/@d3/bar-chart</title>
+</head>
+<body>
+<script src="//d3js.org/d3.v5.js"></script>
+<script>
+    const margin = ({top: 100, right: 100, bottom: 100, left: 100});
+    const width = Math.max(960, innerWidth),
+          height = Math.max(500, innerHeight);
+    const color = "steelblue";
+    const alphabet = "letter,frequency\nA,0.08167\nB,0.01492\nC,0.02782\nD,0.04253\nE,0.12702\nF,0.02288\nG,0.02015\nH,0.06094\nI,0.06966\nJ,0.00153\nK,0.00772\nL,0.04025\nM,0.02406\nN,0.06749\nO,0.07507\nP,0.01929\nQ,0.00095\nR,0.05987\nS,0.06327\nT,0.09056\nU,0.02758\nV,0.00978\nW,0.0236\nX,0.0015\nY,0.01974\nZ,0.00074"
+    const data = Object.assign(d3.csvParse(alphabet, ({letter, frequency}) => ({name: letter, value: +frequency})).sort((a, b) => d3.descending(a.value, b.value)), {format: "%", y: "↑ Frequency"});
+
+    const yAxis = g => g
+            .style("font", "20px times")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).ticks(null, data.format))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.append("text")
+                .attr("x", -margin.left)
+                .attr("y", 30)
+                .attr("fill", "currentColor")
+                .attr("text-anchor", "start")
+                .text(data.y));
+
+    const xAxis = g => g
+            .style("font", "20px times")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickFormat(i => data[i].name).tickSizeOuter(0));
+
+    const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)]).nice()
+            .range([height - margin.bottom, margin.top]);
+
+    const x = d3.scaleBand()
+            .domain(d3.range(data.length))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+
+    var svg = d3.create("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+    svg.append("g")
+        .attr("fill", color)
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("x", (d, i) => x(i))
+        .attr("y", d => y(d.value))
+        .attr("height", d => y(0) - y(d.value))
+        .attr("width", x.bandwidth());
+
+    svg.append("g")
+        .call(xAxis);
+
+    svg.append("g")
+        .call(yAxis);
+
+</script>
+</body>
+</html>
