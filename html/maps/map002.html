@@ -30,6 +30,7 @@
         .append("svg")
         .attr("viewBox", [0, 0, width, height]);
 
+    // Load json data, note that d3 v5 uses promises, so function callbaks are not supported
     d3.json("europe.topojson")
         .then(function (europe) {
             countries = topojson.feature(europe, europe.objects.collection);

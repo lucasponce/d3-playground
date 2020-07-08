@@ -31,6 +31,7 @@
         .attr("viewBox", [0, 0, width, height]);
 
     // From https://github.com/topojson/world-atlas
+    // Load json data, note that d3 v5 uses promises, so function callbaks are not supported
     d3.json("countries-110m.json")
         .then(function (world) {
             countries = topojson.feature(world, world.objects.countries);

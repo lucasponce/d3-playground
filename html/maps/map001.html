@@ -30,7 +30,7 @@
         .append("svg")
         .attr("viewBox", [0, 0, width, height]);
 
-    // Load json data
+    // Load json data, note that d3 v5 uses promises, so function callbaks are not supported
     d3.json("ne_50m_admin_0_countries_simplified.json")
         .then(function (json) {
             // Create one path per GeoJSON feature
