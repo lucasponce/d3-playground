@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Europe Map from https://bl.ocks.org/MariellaCC/0055298b94fcf2c16940</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<script src="//d3js.org/d3.v5.js"></script>
+<script src="//d3js.org/topojson.v3.js"></script>
+<script>
+    const margin = ({top: 100, right: 100, bottom: 100, left: 100});
+    const width = Math.max(960, innerWidth),
+        height = Math.max(500, innerHeight);
+
+    // Define map projection
+    const projection = d3.geoMercator()
+        .center([13, 52])                 // comment centrer la carte, longitude, latitude
+        .translate([width / 2, height / 2])   // centrer l'image obtenue dans le svg
+        .scale([width / 2]);              // zoom, plus la valeur est petit plus le zoom est gros
+
+    // Define path generator
+    const path = d3.geoPath()
+        .projection(projection);
+
+    // Create svg element
+    const svg = d3.select("body")
+        .append("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+    d3.json("europe.topojson")
+        .then(function (europe) {
+            countries = topojson.feature(europe, europe.objects.collection);
+            svg.selectAll("path")
+                .data(countries.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("stroke", "rgba(8, 81, 156, 0.2)")
+                .attr("fill", "rgba(8, 81, 156, 0.6)");
+        });
+
+</script>
+</body>
+</html>
